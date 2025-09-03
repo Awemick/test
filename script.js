@@ -475,19 +475,64 @@ function hideLoading() {
 }
 
 async function showAuthModal() {
-  // Simple prompt-based sign-in (replace with a proper modal in production)
-  const email = prompt('Enter your email:');
-  const password = prompt('Enter your password:');
+  document.getElementById('authModal').classList.remove('hidden');
+  document.getElementById('authModalTitle').textContent = 'Sign In';
+  document.getElementById('authForm').dataset.mode = 'login';
+  document.getElementById('authForm').querySelector('button').textContent = 'Sign In';
+  document.getElementById('toggleAuthMode').textContent = 'Create new account';
+  document.getElementById('authError').textContent = '';
+  document.getElementById('authEmail').value = '';
+  document.getElementById('authPassword').value = '';
+}
+
+// Modal event listeners
+document.getElementById('closeAuthModal').onclick = () => {
+  document.getElementById('authModal').classList.add('hidden');
+};
+
+document.getElementById('toggleAuthMode').onclick = () => {
+  const form = document.getElementById('authForm');
+  if (form.dataset.mode === 'login') {
+    document.getElementById('authModalTitle').textContent = 'Create Account';
+    form.dataset.mode = 'signup';
+    form.querySelector('button').textContent = 'Sign Up';
+    document.getElementById('toggleAuthMode').textContent = 'Already have an account? Sign in';
+  } else {
+    document.getElementById('authModalTitle').textContent = 'Sign In';
+    form.dataset.mode = 'login';
+    form.querySelector('button').textContent = 'Sign In';
+    document.getElementById('toggleAuthMode').textContent = 'Create new account';
+  }
+  document.getElementById('authError').textContent = '';
+};
+
+document.getElementById('authForm').onsubmit = async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('authEmail').value;
+  const password = document.getElementById('authPassword').value;
+  const mode = document.getElementById('authForm').dataset.mode;
+  document.getElementById('authError').textContent = '';
   if (!email || !password) return;
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) {
-    alert('Sign in failed: ' + error.message);
+  if (mode === 'signup') {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      document.getElementById('authError').textContent = error.message;
+    } else {
+      document.getElementById('authError').textContent = 'Sign up successful! Check your email to confirm.';
+    }
   } else {
-    alert('Sign in successful!');
-    updateUIForAuthenticatedUser();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      document.getElementById('authError').textContent = error.message;
+    } else {
+      document.getElementById('authModal').classList.add('hidden');
+      updateUIForAuthenticatedUser();
+    }
   }
-}
+};
+
+// ...existing code...
 
 function updateUIForAuthenticatedUser() {
   const authBtn = document.getElementById('authBtn');
