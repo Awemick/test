@@ -1,9 +1,18 @@
 import { supabase } from './supabase.js'
 
-const PAYSTACK_PUBLIC_KEY = 'pk_test_c8085f6e5ec5f58ab4146937afe3daf700003bfe';
+export const PAYSTACK_PUBLIC_KEY = 'pk_test_c8085f6e5ec5f58ab4146937afe3daf700003bfe';
 
 export const paymentService = {
   async initializePayment(email, amount, metadata = {}) {
+    // Validate inputs
+    if (!PAYSTACK_PUBLIC_KEY || !PAYSTACK_PUBLIC_KEY.startsWith('pk_')) {
+      throw new Error('Invalid Paystack API key configuration');
+    }
+
+    if (!email || !amount || amount <= 0) {
+      throw new Error('Invalid payment parameters');
+    }
+
     try {
       const response = await fetch('https://api.paystack.co/transaction/initialize', {
         method: 'POST',
@@ -18,17 +27,29 @@ export const paymentService = {
           callback_url: `${window.location.origin}/payment-verification.html`
         })
       });
-      
+
       const data = await response.json();
-      
-      if (!data.status) {
-        throw new Error(data.message);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Invalid Paystack API key. Please check your key in the Paystack dashboard.');
+        } else if (response.status === 400) {
+          throw new Error('Invalid payment request. Please check your payment details.');
+        } else if (response.status === 429) {
+          throw new Error('Too many requests. Please try again later.');
+        } else {
+          throw new Error(`Payment service error: ${data.message || 'Unknown error'}`);
+        }
       }
-      
+
+      if (!data.status) {
+        throw new Error(data.message || 'Payment initialization failed');
+      }
+
       return data.data;
     } catch (error) {
       console.error('Payment initialization error:', error);
-      throw new Error('Failed to initialize payment');
+      throw error; // Re-throw the specific error
     }
   },
   
