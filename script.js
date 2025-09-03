@@ -20,6 +20,23 @@ function showAuthModal() {
     document.getElementById('authModalTitle').textContent = 'Sign In';
   }
 }
+function showLoading(message = 'Loading...') {
+  const loadingState = document.getElementById('loadingState');
+  if (loadingState) {
+    loadingState.classList.remove('hidden');
+    const h3 = loadingState.querySelector('h3');
+    if (h3) h3.textContent = message;
+  }
+  // Optionally hide results while loading
+  const resultsSection = document.getElementById('resultsSection');
+  if (resultsSection) resultsSection.classList.add('hidden');
+}
+
+function hideLoading() {
+  const loadingState = document.getElementById('loadingState');
+  if (loadingState) loadingState.classList.add('hidden');
+}
+
 async function initializeApp() {
   // Check authentication state
   const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -311,6 +328,7 @@ async function saveTranscript() {
 
 async function handleGenerateFlashcards() {
   const inputText = document.querySelector('.notes-input').value;
+  console.log('Input text:', inputText); // Add this line
   if (!inputText.trim()) {
     alert('Please enter some text or upload content first.');
     return;
@@ -346,6 +364,7 @@ async function generateFlashcardsAI(text) {
       }
     );
     const result = await response.json();
+    console.log('Hugging Face API result:', result); // Add this line
 
     if (result.error) throw new Error(result.error);
 
