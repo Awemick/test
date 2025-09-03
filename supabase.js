@@ -1,7 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 
+// Define your Supabase URL and anon key
+const supabaseUrl = 'https://pklaygtgyryexuyykvtf.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrbGF5Z3RneXJ5ZXh1eXlrdnRmIiwicm9zZSI6ImFub24iLCJpYXQiOjE3NTY3MTQ3MjEsImV4cCI6MjA3MjI5MDcyMX0.wFiSHjsg3oF5CdeRnRY5VTs6rhzJHJbVjT3B79EfAW0'
+
 // Create a single supabase client for interacting with your database
-export const supabase = createClient('https://pklaygtgyryexuyykvtf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrbGF5Z3RneXJ5ZXh1eXlrdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY3MTQ3MjEsImV4cCI6MjA3MjI5MDcyMX0.wFiSHjsg3oF5CdeRnRY5VTs6rhzJHJbVjT3B79EfAW0')
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Helper functions
 export const studySetAPI = {
