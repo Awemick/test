@@ -11,6 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeApp();
 });
 
+function showAuthModal() {
+  const modal = document.getElementById('authModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    document.getElementById('authError').textContent = '';
+    document.getElementById('authForm').dataset.mode = 'login';
+    document.getElementById('authModalTitle').textContent = 'Sign In';
+  }
+}
 async function initializeApp() {
   // Check authentication state
   const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -152,6 +161,45 @@ function setupEventListeners() {
       alert('Demo video would play here in the full version.');
     });
   }
+  
+  // Close auth modal button
+  document.getElementById('closeAuthModal').addEventListener('click', () => {
+    document.getElementById('authModal').classList.add('hidden');
+  });
+  
+  // Toggle auth mode (login/signup)
+  document.getElementById('toggleAuthMode').addEventListener('click', () => {
+    const form = document.getElementById('authForm');
+    if (form.dataset.mode === 'login') {
+      form.dataset.mode = 'signup';
+      document.getElementById('authModalTitle').textContent = 'Create Account';
+      document.getElementById('toggleAuthMode').textContent = 'Already have an account? Sign In';
+    } else {
+      form.dataset.mode = 'login';
+      document.getElementById('authModalTitle').textContent = 'Sign In';
+      document.getElementById('toggleAuthMode').textContent = 'Create new account';
+    }
+    document.getElementById('authError').textContent = '';
+  });
+  
+  document.getElementById('authForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    const mode = e.target.dataset.mode;
+    let result;
+    if (mode === 'signup') {
+      result = await supabase.auth.signUp({ email, password });
+    } else {
+      result = await supabase.auth.signInWithPassword({ email, password });
+    }
+    if (result.error) {
+      document.getElementById('authError').textContent = result.error.message;
+    } else {
+      document.getElementById('authModal').classList.add('hidden');
+      updateUIForAuthenticatedUser();
+    }
+  });
 }
 
 async function handleAuthClick() {
@@ -537,4 +585,14 @@ function updateUIForAuthenticatedUser() {
   // Show user-specific content, update UI for logged-in user
   document.getElementById('authBtn').textContent = 'Sign Out';
   // You can show tabs or sections if needed
+}
+
+function showAuthModal() {
+  const modal = document.getElementById('authModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    document.getElementById('authError').textContent = '';
+    document.getElementById('authForm').dataset.mode = 'login';
+    document.getElementById('authModalTitle').textContent = 'Sign In';
+  }
 }
