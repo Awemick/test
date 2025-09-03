@@ -474,9 +474,19 @@ function hideLoading() {
   if (loadingState) loadingState.classList.add('hidden');
 }
 
-function showAuthModal() {
-  // Implementation for showing auth modal
-  alert('Auth modal would appear here. In a full implementation, this would show a login/signup form.');
+async function showAuthModal() {
+  // Simple prompt-based sign-in (replace with a proper modal in production)
+  const email = prompt('Enter your email:');
+  const password = prompt('Enter your password:');
+  if (!email || !password) return;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) {
+    alert('Sign in failed: ' + error.message);
+  } else {
+    alert('Sign in successful!');
+    updateUIForAuthenticatedUser();
+  }
 }
 
 function updateUIForAuthenticatedUser() {
