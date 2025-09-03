@@ -99,20 +99,25 @@ body {
 
 .nav {
     display: flex;
-    gap: var(--spacing-lg);
+    gap: 1.5rem;
+    background: #f3f4f6;
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    justify-content: center;
 }
 
 .nav-link {
-    text-decoration: none;
-    color: var(--color-text-light);
+    color: #6366f1;
     font-weight: 500;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-sm);
-    transition: all 0.2s ease;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    font-size: 0.95rem;
+    gap: 0.5rem;
+    cursor: pointer;
 }
 
 .nav-link:hover {
@@ -365,22 +370,19 @@ body {
 }
 
 .section-header {
+    margin-bottom: 2rem;
     text-align: center;
-    margin-bottom: var(--spacing-2xl);
 }
 
 .section-header h2 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--color-text);
-    margin-bottom: var(--spacing-md);
+    font-size: 2rem;
+    color: #3730a3;
+    font-weight: 700;
 }
 
-.subtitle {
-    font-size: 1.2rem;
-    color: var(--color-text-light);
-    max-width: 600px;
-    margin: 0 auto;
+.section-header .subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
 }
 
 /* Input Methods - FIXED STYLES */
