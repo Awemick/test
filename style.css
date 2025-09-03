@@ -897,35 +897,86 @@ body {
 }
 
 /* Flashcard Grid */
-.flashcards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-md);
+#flashcardsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 2rem;
 }
 
+/* Individual flashcard */
 .flashcard {
-    background: var(--color-background);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--color-border);
-    transition: all 0.2s ease;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 1.5rem;
+  width: 320px;
+  transition: box-shadow 0.2s;
+  position: relative;
 }
 
 .flashcard:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 32px rgba(99,102,241,0.15);
 }
 
-.flashcard h4 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
-    font-size: 1.1rem;
+/* Flashcard content */
+.flashcard-content h4 {
+  margin-bottom: 0.5rem;
+  color: #6366f1;
+  font-weight: 700;
 }
 
-.flashcard p {
-    color: var(--color-text);
-    line-height: 1.6;
+.flashcard-content p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+/* Options */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.option-btn {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-align: left;
+}
+
+.option-btn:hover {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.option-btn.correct {
+  background: #bbf7d0;
+  color: #166534;
+  font-weight: 600;
+}
+
+.option-btn.incorrect {
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+/* Correct answer reveal */
+.answer {
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 0.5rem;
+  color: #0f172a;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
 }
 
 /* Utility Classes */
@@ -1014,4 +1065,17 @@ body {
     .results-actions {
         justify-content: center;
     }
+}
+
+/* Add to your main CSS file */
+.resource-list {
+  list-style: none;
+  padding-left: 0;
+}
+.resource-list li {
+  margin-bottom: 8px;
+}
+.resource-list a {
+  color: #007bff;
+  text-decoration: underline;
 }
