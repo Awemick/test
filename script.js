@@ -485,55 +485,6 @@ async function showAuthModal() {
   document.getElementById('authPassword').value = '';
 }
 
-// Modal event listeners
-document.getElementById('closeAuthModal').onclick = () => {
-  document.getElementById('authModal').classList.add('hidden');
-};
-
-document.getElementById('toggleAuthMode').onclick = () => {
-  const form = document.getElementById('authForm');
-  if (form.dataset.mode === 'login') {
-    document.getElementById('authModalTitle').textContent = 'Create Account';
-    form.dataset.mode = 'signup';
-    form.querySelector('button').textContent = 'Sign Up';
-    document.getElementById('toggleAuthMode').textContent = 'Already have an account? Sign in';
-  } else {
-    document.getElementById('authModalTitle').textContent = 'Sign In';
-    form.dataset.mode = 'login';
-    form.querySelector('button').textContent = 'Sign In';
-    document.getElementById('toggleAuthMode').textContent = 'Create new account';
-  }
-  document.getElementById('authError').textContent = '';
-};
-
-document.getElementById('authForm').onsubmit = async (e) => {
-  e.preventDefault();
-  const email = document.getElementById('authEmail').value;
-  const password = document.getElementById('authPassword').value;
-  const mode = document.getElementById('authForm').dataset.mode;
-  document.getElementById('authError').textContent = '';
-  if (!email || !password) return;
-
-  if (mode === 'signup') {
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      document.getElementById('authError').textContent = error.message;
-    } else {
-      document.getElementById('authError').textContent = 'Sign up successful! Check your email to confirm.';
-    }
-  } else {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      document.getElementById('authError').textContent = error.message;
-    } else {
-      document.getElementById('authModal').classList.add('hidden');
-      updateUIForAuthenticatedUser();
-    }
-  }
-};
-
-// ...existing code...
-
 function updateUIForAuthenticatedUser() {
   const authBtn = document.getElementById('authBtn');
   if (authBtn) {
@@ -657,3 +608,59 @@ function switchToTab(tabName) {
 
 // Make switchToTab available globally
 window.switchToTab = switchToTab;
+
+// Modal event listeners (move these here!)
+const closeAuthModalBtn = document.getElementById('closeAuthModal');
+if (closeAuthModalBtn) {
+  closeAuthModalBtn.onclick = () => {
+    document.getElementById('authModal').classList.add('hidden');
+  };
+}
+
+const toggleAuthModeBtn = document.getElementById('toggleAuthMode');
+if (toggleAuthModeBtn) {
+  toggleAuthModeBtn.onclick = () => {
+    const form = document.getElementById('authForm');
+    if (form.dataset.mode === 'login') {
+      document.getElementById('authModalTitle').textContent = 'Create Account';
+      form.dataset.mode = 'signup';
+      form.querySelector('button').textContent = 'Sign Up';
+      document.getElementById('toggleAuthMode').textContent = 'Already have an account? Sign in';
+    } else {
+      document.getElementById('authModalTitle').textContent = 'Sign In';
+      form.dataset.mode = 'login';
+      form.querySelector('button').textContent = 'Sign In';
+      document.getElementById('toggleAuthMode').textContent = 'Create new account';
+    }
+    document.getElementById('authError').textContent = '';
+  };
+}
+
+const authForm = document.getElementById('authForm');
+if (authForm) {
+  authForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    const mode = document.getElementById('authForm').dataset.mode;
+    document.getElementById('authError').textContent = '';
+    if (!email || !password) return;
+
+    if (mode === 'signup') {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        document.getElementById('authError').textContent = error.message;
+      } else {
+        document.getElementById('authError').textContent = 'Sign up successful! Check your email to confirm.';
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        document.getElementById('authError').textContent = error.message;
+      } else {
+        document.getElementById('authModal').classList.add('hidden');
+        updateUIForAuthenticatedUser();
+      }
+    }
+  };
+}
