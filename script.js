@@ -154,8 +154,10 @@ function setupEventListeners() {
       e.preventDefault();
       const tabName = this.dataset.tab;
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      document.getElementById(`${tabName}-tab`).classList.add('active');
-
+      const tabPane = document.getElementById(`${tabName}-tab`);
+      if (tabPane) tabPane.classList.add('active');
+      tabLinks.forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
       // Load data for each tab
       if (tabName === 'study') loadStudySets();
       if (tabName === 'library') loadLibrary();
@@ -215,6 +217,39 @@ function setupEventListeners() {
     } else {
       document.getElementById('authModal').classList.add('hidden');
       updateUIForAuthenticatedUser();
+    }
+  });
+  
+  document.getElementById('saveToLibraryBtn').addEventListener('click', async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      alert('Please sign in to save your flashcards.');
+      showAuthModal();
+      return;
+    }
+    // Get flashcards from the DOM
+    const flashcards = [];
+    document.querySelectorAll('#flashcardsGrid .flashcard').forEach(cardEl => {
+      const question = cardEl.querySelector('p strong') ? cardEl.querySelector('p strong').nextSibling.textContent.trim() : '';
+      const answer = cardEl.querySelector('.answer') ? cardEl.querySelector('.answer').textContent.replace('Correct:', '').trim() : '';
+      flashcards.push({ question, answer });
+    });
+    if (flashcards.length === 0) {
+      alert('No flashcards to save.');
+      return;
+    }
+    // Save to Supabase (adjust table/fields as needed)
+    const { error } = await supabase
+      .from('flashcards')
+      .insert(flashcards.map(card => ({
+        user_id: user.id,
+        question: card.question,
+        answer: card.answer
+      })));
+    if (error) {
+      alert('Error saving flashcards.');
+    } else {
+      alert('Flashcards saved to your library!');
     }
   });
 }
